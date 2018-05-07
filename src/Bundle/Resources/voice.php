@@ -9,6 +9,7 @@
 $api[\Controllers\VoiceController::class] = function ($api) {
     return new \Controllers\VoiceController(
         $api[\Controllers\ScriptController::class],
-        $api[\Persist\ProjectPersist::class]
+        $api[\Persist\ProjectPersist::class],
+        $api[\Retrieve\ProjectRetrieve::class]
     );
 };

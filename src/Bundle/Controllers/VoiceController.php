@@ -11,7 +11,9 @@ namespace Controllers;
 use Common\AbstractController;
 use Entity\Project;
 use Persist\ProjectPersist;
+use Retrieve\ProjectRetrieve;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Unirest;
 
 /**
@@ -30,17 +32,26 @@ class VoiceController extends AbstractController
      */
     private $projectPersist;
 
+
+    /**
+     * @var ProjectRetrieve
+     */
+    private $projectRetrieve;
+
     /**
      * VoiceController constructor.
      * @param ScriptController $scriptController
      * @param ProjectPersist $projectPersist
+     * @param ProjectRetrieve $projectRetrieve
      */
     public function __construct(
         ScriptController $scriptController,
-        ProjectPersist $projectPersist
+        ProjectPersist $projectPersist,
+        ProjectRetrieve $projectRetrieve
     ) {
         $this->scriptController = $scriptController;
         $this->projectPersist = $projectPersist;
+        $this->projectRetrieve = $projectRetrieve;
     }
 
     /**
@@ -69,6 +80,8 @@ class VoiceController extends AbstractController
         $project->setTitle($script['title']);
         $project->setScript($script['script']);
         $project->setVoiceBunnyId(($voiceReturn->body->project->id));
+        $project->setReadDefault($voiceReturn->body->project->reads[0]->urls->part001->default);
+        $project->setReadOriginal($voiceReturn->body->project->reads[0]->urls->part001->original);
 
         $this->projectPersist->process($project);
 
@@ -98,7 +111,8 @@ class VoiceController extends AbstractController
         $arguments = array(
             'title' => $script['title'],
             'script' => $script['script'],
-            'test' => 1
+            'test' => 1,
+            'ping' => 'https://magic-script.herokuapp.com/ping'
         );
 
         $body = Unirest\Request\Body::Json($arguments);
@@ -112,5 +126,40 @@ class VoiceController extends AbstractController
         );
 
         return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function getPingByVoiceBunny(Request $request) {
+        /** @var Project $project */
+        $project = $this->projectRetrieve->retrieveLast();
+
+        $project->setTitle($request);
+
+        $this->projectPersist->process($project);
+    }
+
+    /**
+     * @return Response
+     */
+    public function renderHTML() {
+        /** @var Project $project */
+        $project = $this->projectRetrieve->retrieveLast();
+
+        $script = $project->getScript();
+        /**
+         * Render simply HTML to show Script and Audio
+         */
+        return new Response(
+            '<html>
+                        <body><h1>Magic Script</h1>
+                            <div>
+                            <b>Script: '. $script . '</b>
+                            </div>
+                        </body>
+                    </html>'
+        );
     }
 }

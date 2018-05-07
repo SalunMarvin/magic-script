@@ -44,4 +44,9 @@ abstract class AbstractRetrieve
     {
         return $this->entityRepository->findOneBy(['id' => $id]);
     }
+
+    public function retrieveLast()
+    {
+        return $this->entityRepository->findOneBy(array(), array('id' => 'DESC'));
+    }
 }

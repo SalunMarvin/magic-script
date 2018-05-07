@@ -17,11 +17,22 @@ $api->get(
 });
 
 $api->get(
-    '/generate-web-player',
+    '/ping',
     function (\Symfony\Component\HttpFoundation\Request $request
     ) use ($api) {
         /** @var \Controllers\VoiceController $voiceController */
         $voiceController = $api[\Controllers\VoiceController::class];
 
-        return $voiceController->requestScriptToVoiceBunny($request);
+        return $voiceController->getPingFromVoiceBunny($request);
+    });
+
+
+$api->get(
+    '/',
+    function (\Symfony\Component\HttpFoundation\Request $request
+    ) use ($api) {
+        /** @var \Controllers\VoiceController $voiceController */
+        $voiceController = $api[\Controllers\VoiceController::class];
+
+        return $voiceController->renderHTML($request);
     });
