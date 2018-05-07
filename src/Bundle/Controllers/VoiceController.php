@@ -112,7 +112,6 @@ class VoiceController extends AbstractController
             'title' => $script['title'],
             'script' => $script['script'],
             'test' => 1,
-            'ping' => 'https://magic-script.herokuapp.com/ping'
         );
 
         $body = Unirest\Request\Body::Json($arguments);
@@ -129,28 +128,13 @@ class VoiceController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     * @throws \Doctrine\ORM\ORMException
-     */
-    public function getPingFromVoiceBunny(Request $request) {
-        /** @var Project $project */
-        $project = $this->projectRetrieve->retrieveLast();
-
-        $project->setTitle($request);
-
-        $this->projectPersist->process($project);
-
-        return $this->createResponse('success', []);
-    }
-
-    /**
      * @return Response
      */
     public function renderHTML() {
         /** @var Project $project */
         $project = $this->projectRetrieve->retrieveLast();
 
-        $script = $project->getTitle();
+        $script = $project->getScript();
         $audio = $project->getReadDefault();
 
         /**

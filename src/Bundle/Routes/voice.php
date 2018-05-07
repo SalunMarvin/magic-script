@@ -6,7 +6,7 @@
  * Time: 18:20
  */
 
-$api->get(
+$api->post(
     '/generate-script-and-audio',
     function (\Symfony\Component\HttpFoundation\Request $request
     ) use ($api) {
@@ -15,16 +15,6 @@ $api->get(
 
     return $voiceController->requestScriptToVoiceBunny($request);
 });
-
-$api->get(
-    '/ping',
-    function (\Symfony\Component\HttpFoundation\Request $request
-    ) use ($api) {
-        /** @var \Controllers\VoiceController $voiceController */
-        $voiceController = $api[\Controllers\VoiceController::class];
-
-        return $voiceController->getPingFromVoiceBunny($request);
-    });
 
 
 $api->get(
