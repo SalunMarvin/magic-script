@@ -132,7 +132,7 @@ class VoiceController extends AbstractController
      * @param Request $request
      * @throws \Doctrine\ORM\ORMException
      */
-    public function getPingByVoiceBunny(Request $request) {
+    public function getPingFromVoiceBunny(Request $request) {
         /** @var Project $project */
         $project = $this->projectRetrieve->retrieveLast();
 
@@ -151,6 +151,8 @@ class VoiceController extends AbstractController
         $project = $this->projectRetrieve->retrieveLast();
 
         $script = $project->getTitle();
+        $audio = $project->getReadDefault();
+
         /**
          * Render simply HTML to show Script and Audio
          */
@@ -159,6 +161,11 @@ class VoiceController extends AbstractController
                         <body><h1>Magic Script</h1>
                             <div>
                             <b>Script: '. $script . '</b>
+                            </div>
+                            <div>
+                            <audio controls>
+                                <source src='. $audio .' type="audio/mpeg">
+                            </audio>
                             </div>
                         </body>
                     </html>'
