@@ -26,7 +26,7 @@ $config->setMetadataDriverImpl($driver);
 
 $conn =  [
     'driver' => 'pdo_sqlite',
-    'path' => __DIR__.'/app.db',
+    'path' => __DIR__.'/../database/database.sqlite',
 ];
 
 //getting the EntityManager
