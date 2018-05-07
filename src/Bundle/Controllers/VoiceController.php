@@ -57,19 +57,25 @@ class VoiceController extends AbstractController
     /**
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws Unirest\Exception
      * @throws \Doctrine\ORM\ORMException
      */
     public function requestScriptToVoiceBunny(Request $request)
     {
         /**
+         * Verify POST data and decode it to JSON
+         */
+        $data = $this->verifyRequest($request);
+
+        /**
          * Will call the Script Controller to generate a new Script
          */
-        $script = $this->scriptController->buildScriptStructure();
+        $script = $this->scriptController->buildScriptStructure($data->content);
 
         /**
          * Will call the request to the VoiceBunny API
          */
-        $voiceReturn = $this->makeRequest($script);
+        $voiceReturn = $this->makeRequest($script, $data->content);
 
         /** @var Project $project */
         $project = new Project();
@@ -97,12 +103,12 @@ class VoiceController extends AbstractController
      * @return Unirest\Response
      * @throws Unirest\Exception
      */
-    public function makeRequest($script) {
+    public function makeRequest($script, $data) {
         /**
          * Required data to request Voice Bunny's API
          */
-        $voicebunnyUser = '131901';
-        $voicebunnyToken = 'ccf481787204842808cea84fa3193e87';
+        $voicebunnyUser = $data->voicebunnyUser;
+        $voicebunnyToken = $data->voicebunnyToken;
 
         $headers = array(
             'Content-Type' => 'application/json',
@@ -111,7 +117,7 @@ class VoiceController extends AbstractController
         $arguments = array(
             'title' => $script['title'],
             'script' => $script['script'],
-            'test' => 1,
+            'test' => $data->test,
         );
 
         $body = Unirest\Request\Body::Json($arguments);

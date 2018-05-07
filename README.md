@@ -17,7 +17,6 @@ is SQLite (but the driver is easy to change if necessary).
 * Improve the Mashape API, it has a bug that retrieves only a quote per request, so a 
 loop is necessary to get more than one quote. Unit tests
 * Unit tests
-* Create env file to change variables (ID, Token, Test, Quote Number)
 
 
 ### Setup
@@ -33,5 +32,15 @@ Project should be working accordingly to your local webserver.
 ### Endpoints:
 
 *POST* `/generate-script-and-audio`
+*Body*:
+
+```
+{
+  "voicebunnyUser": "YYY",
+  "voicebunnyToken": "XXX",
+  "test": 1,
+  "numberOfQuotes": 10
+}
+```
 
 This will generate a random script and send it to VoiceBunny's API

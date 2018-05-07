@@ -18,14 +18,15 @@ use Unirest;
 class ScriptController extends AbstractController
 {
     /**
+     * @param $data
      * @return array
      */
-    public function buildScriptStructure()
+    public function buildScriptStructure($data)
     {
         /**
          * Number of quotes that should be concat into one script
          */
-        $numberOfQuotes = 10;
+        $numberOfQuotes = $data->numberOfQuotes;
 
         /**
          * Create Script Structure with Title and Script lines
@@ -65,7 +66,7 @@ class ScriptController extends AbstractController
          */
         $parameters = array(
             'cat' => 'movies',
-            'count' => 10
+            'count' => 1
         );
 
         /**
