@@ -139,6 +139,8 @@ class VoiceController extends AbstractController
         $project->setTitle($request);
 
         $this->projectPersist->process($project);
+
+        return $this->createResponse('success', []);
     }
 
     /**
