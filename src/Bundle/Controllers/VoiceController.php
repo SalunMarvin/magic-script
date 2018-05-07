@@ -148,7 +148,7 @@ class VoiceController extends AbstractController
         /** @var Project $project */
         $project = $this->projectRetrieve->retrieveLast();
 
-        $script = $project->getScript();
+        $script = $project->getTitle();
         /**
          * Render simply HTML to show Script and Audio
          */
