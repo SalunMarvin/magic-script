@@ -1,0 +1,27 @@
+{
+  "name": "Magic Script",
+  "description": "Test Application for Torre",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Salun Marvin",
+      "email": "salunmarvin@gmail.com",
+      "role": "PHP Developer"
+    }
+  ],
+  "require": {
+    "php": ">=7.0.27",
+    "silex/silex": "1.3.*",
+    "mashape/unirest-php": "3.*",
+    "doctrine/dbal": "2.*",
+    "doctrine/orm": "2.*",
+    "symfony/yaml": "^2.7",
+    "doctrine/migrations": "1.1.*"
+  },
+  "autoload": {
+    "psr-4": { "": "src/Bundle/" }
+  },
+  "config": {
+    "bin-dir": "bin/"
+  }
+}

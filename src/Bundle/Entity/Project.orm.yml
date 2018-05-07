@@ -1,0 +1,36 @@
+Entity\Project:
+    type: entity
+    id:
+        id:
+            type: integer
+            generator: { strategy: AUTO }
+    fields:
+        createdAt:
+            column: created_at
+            type: datetime
+        deletedAt:
+            column: deleted_at
+            type: datetime
+            nullable: true
+        updatedAt:
+            column: updated_at
+            type: datetime
+            nullable: true
+        title:
+            type: string
+            nullable: false
+        script:
+            type: string
+            nullable: true
+        readDefault:
+            column: read_default
+            type: string
+            nullable: true
+        readOriginal:
+            column: read_original
+            type: string
+            nullable: true
+        voiceBunnyId:
+            column: voice_bunny_id
+            type: string
+            nullable: true
