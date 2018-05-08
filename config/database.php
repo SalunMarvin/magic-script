@@ -2,8 +2,6 @@
 /**
  * Created by PhpStorm.
  * User: marvin
- * Date: 06/05/18
- * Time: 19:45
  */
 
 use Doctrine\ORM\Configuration;

@@ -34,3 +34,11 @@ Entity\Project:
             column: voice_bunny_id
             type: string
             nullable: true
+        audioIsReady:
+            column: audio_is_ready
+            type: string
+            nullable: true
+        referenceCode:
+            column: reference_code
+            type: string
+            nullable: true

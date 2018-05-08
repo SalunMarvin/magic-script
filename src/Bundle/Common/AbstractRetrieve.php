@@ -45,6 +45,18 @@ abstract class AbstractRetrieve
         return $this->entityRepository->findOneBy(['id' => $id]);
     }
 
+    /**
+     * @param $referenceCode
+     * @return null|object
+     */
+    public function retrieveByReferenceCode($referenceCode)
+    {
+        return $this->entityRepository->findOneBy(['referenceCode' => $referenceCode]);
+    }
+
+    /**
+     * @return null|object
+     */
     public function retrieveLast()
     {
         return $this->entityRepository->findOneBy(array(), array('id' => 'DESC'));

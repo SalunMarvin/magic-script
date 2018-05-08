@@ -10,6 +10,7 @@ namespace Controllers;
 
 use Common\AbstractController;
 use Entity\Project;
+use Normalizers\ProjectNormalizer;
 use Persist\ProjectPersist;
 use Retrieve\ProjectRetrieve;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +21,7 @@ use Unirest;
  * Class VoiceController
  * @package Controllers
  */
-class VoiceController extends AbstractController
+class ProjectController extends AbstractController
 {
     /**
      * @var ScriptController
@@ -39,20 +40,43 @@ class VoiceController extends AbstractController
     private $projectRetrieve;
 
     /**
-     * VoiceController constructor.
+     * @var ProjectNormalizer
+     */
+    private $projectNormalizer;
+
+    /**
+     * ProjectController constructor.
      * @param ScriptController $scriptController
      * @param ProjectPersist $projectPersist
      * @param ProjectRetrieve $projectRetrieve
+     * @param ProjectNormalizer $projectNormalizer
      */
     public function __construct(
         ScriptController $scriptController,
         ProjectPersist $projectPersist,
-        ProjectRetrieve $projectRetrieve
+        ProjectRetrieve $projectRetrieve,
+        ProjectNormalizer $projectNormalizer
     ) {
         $this->scriptController = $scriptController;
         $this->projectPersist = $projectPersist;
         $this->projectRetrieve = $projectRetrieve;
+        $this->projectNormalizer = $projectNormalizer;
     }
+
+    /**
+     * @param $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getAllProjects($request) {
+        $this->verifyRequest($request);
+
+        $projects = $this->projectRetrieve->retrieveAll();
+
+        $normalizedProjects = $this->projectNormalizer->normalizeCollection($projects);
+
+        return $this->createResponse('success', $normalizedProjects);
+    }
+
 
     /**
      * @param Request $request
@@ -72,13 +96,19 @@ class VoiceController extends AbstractController
          */
         $script = $this->scriptController->buildScriptStructure($data->content);
 
+        /** @var Project $project */
+        $project = new Project();
+
+        /**
+         * Set a Unique ID to the Project
+         */
+        $referenceCode = uniqid('', true);
+        $project->setReferenceCode($referenceCode);
+
         /**
          * Will call the request to the VoiceBunny API
          */
-        $voiceReturn = $this->makeRequest($script, $data->content);
-
-        /** @var Project $project */
-        $project = new Project();
+        $voiceReturn = $this->makeRequest($script, $data->content, $referenceCode);
 
         /**
          * Creates new Project in Database
@@ -88,6 +118,7 @@ class VoiceController extends AbstractController
         $project->setVoiceBunnyId(($voiceReturn->body->project->id));
         $project->setReadDefault($voiceReturn->body->project->reads[0]->urls->part001->default);
         $project->setReadOriginal($voiceReturn->body->project->reads[0]->urls->part001->original);
+        $project->setAudioIsReady($voiceReturn->body->project->reads[0]->status);
 
         $this->projectPersist->process($project);
 
@@ -97,13 +128,12 @@ class VoiceController extends AbstractController
         return $this->createResponse('success', $voiceReturn->body->project);
     }
 
-
     /**
      * @param $script
      * @return Unirest\Response
      * @throws Unirest\Exception
      */
-    public function makeRequest($script, $data) {
+    public function makeRequest($script, $data, $referenceCode) {
         /**
          * Required data to request Voice Bunny's API
          */
@@ -114,10 +144,13 @@ class VoiceController extends AbstractController
             'Content-Type' => 'application/json',
         );
 
+        $pingUrl = 'https://magic-script.herokuapp.com/ping/' . $referenceCode;
+
         $arguments = array(
             'title' => $script['title'],
             'script' => $script['script'],
             'test' => $data->test,
+            'ping' => $pingUrl
         );
 
         $body = Unirest\Request\Body::Json($arguments);
@@ -134,6 +167,26 @@ class VoiceController extends AbstractController
     }
 
     /**
+     * @param $request
+     * @param $referenceCode
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function ping($request, $referenceCode) {
+        /** @var Project $project */
+        $project = $this->projectRetrieve->retrieveByReferenceCode($referenceCode);
+
+        /**
+         * When VoiceBunny pings this Project it will update with audio ready
+         */
+        $project->setAudioIsReady('ready');
+
+        $project = $this->projectPersist->process($project);
+
+        return $this->createResponse('sucess', $project);
+    }
+
+    /**
      * @return Response
      */
     public function renderHTML() {
@@ -142,6 +195,13 @@ class VoiceController extends AbstractController
 
         $script = $project->getScript();
         $audio = $project->getReadDefault();
+        $isReady = '<b>Audio not ready yet!</b>';
+
+        if ($project->getAudioIsReady() === 'ready') {
+            $isReady = '<audio controls>
+                            <source src='. $audio .' type="audio/mpeg">
+                        </audio>';
+        }
 
         /**
          * Render simply HTML to show Script and Audio
@@ -152,11 +212,9 @@ class VoiceController extends AbstractController
                             <div>
                             <b>Script: '. $script . '</b>
                             </div>
-                            <div>
-                            <audio controls>
-                                <source src='. $audio .' type="audio/mpeg">
-                            </audio>
-                            </div>
+                            <div>'
+                            . $isReady .
+                            '</div>
                         </body>
                     </html>'
         );

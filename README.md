@@ -32,6 +32,7 @@ Project should be working accordingly to your local webserver.
 ### Endpoints:
 
 *POST* `/generate-script-and-audio`
+
 *Body*:
 
 ```

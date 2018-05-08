@@ -16,6 +16,8 @@
     "doctrine/dbal": "2.*",
     "doctrine/orm": "2.*",
     "symfony/yaml": "^2.7",
+    "symfony/serializer": "^2.7",
+    "symfony/property-access": "^2.7",
     "doctrine/migrations": "1.1.*",
     "ext-pdo_sqlite": "*"
   },

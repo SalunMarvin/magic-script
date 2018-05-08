@@ -20,11 +20,10 @@ require_once __DIR__ . '/../config/database.php';
  */
 require_once __DIR__ . '/../src/Bundle/Resources/project.php';
 require_once __DIR__ . '/../src/Bundle/Resources/script.php';
-require_once __DIR__ . '/../src/Bundle/Resources/voice.php';
 
 /**
  * Load Routing Resources
  */
-require_once __DIR__ . '/../src/Bundle/Routes/voice.php';
+require_once __DIR__ . '/../src/Bundle/Routes/project.php';
 
 return $api;

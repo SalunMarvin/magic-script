@@ -28,6 +28,10 @@ class Project
 
     private $voiceBunnyId;
 
+    private $audioIsReady;
+
+    private $referenceCode;
+
     /**
      * @return mixed
      */
@@ -170,5 +174,37 @@ class Project
     public function setVoiceBunnyId($voiceBunnyId)
     {
         $this->voiceBunnyId = $voiceBunnyId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAudioIsReady()
+    {
+        return $this->audioIsReady;
+    }
+
+    /**
+     * @param mixed $audioIsReady
+     */
+    public function setAudioIsReady($audioIsReady)
+    {
+        $this->audioIsReady = $audioIsReady;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReferenceCode()
+    {
+        return $this->referenceCode;
+    }
+
+    /**
+     * @param mixed $referenceCode
+     */
+    public function setReferenceCode($referenceCode)
+    {
+        $this->referenceCode = $referenceCode;
     }
 }

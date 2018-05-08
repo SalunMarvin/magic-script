@@ -2,8 +2,6 @@
 /**
  * Created by PhpStorm.
  * User: Marvin
- * Date: 5/24/16
- * Time: 17:30
  */
 
 require_once __DIR__ . '/database.php';
