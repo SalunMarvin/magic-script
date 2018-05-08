@@ -212,7 +212,7 @@ class ProjectController extends AbstractController
                             <div>
                             <b>Script: '. $script . '</b>
                             </div>
-                            <div>'
+                            <div><br /><br />'
                             . $isReady .
                             '</div>
                         </body>
